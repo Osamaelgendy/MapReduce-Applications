@@ -1,1 +1,1 @@
-# MapReuce-Applications
+# MapReduce-Applications
