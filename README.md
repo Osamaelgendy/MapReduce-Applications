@@ -9,35 +9,34 @@ This project demonstrates the use of Hadoop MapReduce with both Java and Python 
 
 ```
 /my-mapreduce-project
-│
+│── Dockerfile
 ├── /java
 │   ├── /src
 │   │   ├── /main
 │   │   │   ├── /java
 │   │   │   │   ├── /com
 │   │   │   │   │   ├── /yourpackage
-│   │   │   │   │   │   ├── MapReduceTask.java
-│   │   │   │   │   │   ├── CustomWritable.java
-│   │   │   │   │   │   ├── CompositeKey.java
-│   │   │   │   │   │   └── OtherClasses.java
+│   │   │   │   │   │   ├── StringPairDriver.java
+│   │   │   │   │   │   ├── StringPairMapper.java
+│   │   │   │   │   │   ├── StringPairReducer.java
+│   │   │   │   │   │   └── StringPairWritable.java
 │   │   ├── /resources
 │   │   │   ├── /input
 │   │   │   └── /output
 │   │   ├── pom.xml (or build.gradle)
+│   │   
 │
 ├── /python
-│   ├── /task_with_combiner
-│   │   ├── task_with_combiner.py
-│   │   └── /data
-│   │       ├── input_file
-│   │       └── output_file
-│   ├── /task_without_combiner
-│   │   ├── task_without_combiner.py
-│   │   └── /data
-│   │       ├── input_file
-│   │       └── output_file
-│   ├── /utils
-│   │   └── helper_functions.py
+│   ├── /Indus_data_partition&customclass
+│   │   ├── /code
+│   │   ├── /input
+│   │   ├── /logs
+│   │   └── /outputs
+│   ├── /Indus_data_simple_count
+│   │   ├── /code
+│   │   ├── /input
+│   │   ├── /logs
+│   │   └── /outputs
 │   ├── requirements.txt
 │
 ├── /docs
@@ -46,11 +45,13 @@ This project demonstrates the use of Hadoop MapReduce with both Java and Python 
 │
 ├── /tests
 │   ├── /java_tests
-│   │   ├── MapReduceTaskTest.java
-│   │   └── CustomWritableTest.java
+│   │   ├── StringPairDriverTest.java
+│   │   ├── StringPairMapperTest.java
+│   │   ├── StringPairReducerTest.java
+│   │   └── StringPairWritableTest.java
 │   ├── /python_tests
-│   │   ├── test_task_with_combiner.py
-│   │   └── test_task_without_combiner.py
+│   │   ├── test_partition_customclass.py
+│   │   └── test_simple_count.py
 │
 └── .gitignore
 ```
@@ -64,12 +65,13 @@ The Hadoop environment was configured on a Linux machine using a custom Dockerfi
 
 Steps:
 1. Create Dockerfile containing all the dependencies for your linux machine that hosts hadoop in a pseudo distributed mode.
+   **Dockerfile**: Defines the environment for running hadoop on a linux machine.
    
 2. Build the Docker image:
    ```bash
    docker build -t custom-hadoop-ubuntu .
    ```
-2. Run the Hadoop container:
+3. Run the Hadoop container:
    ```bash
    docker run -it -p 8088:8088 -p 9870:9870 -p 19888:19888 custom-hadoop-ubuntu:latest
    ```
@@ -77,29 +79,34 @@ Steps:
 ### 2. Java Implementation
 The `java` directory contains the implementation of the MapReduce task in Java.
 
-- **CustomWritable.java**: Defines a custom writable for composite keys.
-- **MapReduceTask.java**: Implements the Map and Reduce logic.
+- **StringPairDriver.java**: Main driver class for the MapReduce task.
+- **StringPairMapper.java**: Implements the Mapper logic.
+- **StringPairReducer.java**: Implements the Reducer logic.
+- **StringPairWritable.java**: Defines a custom writable for composite keys.
 - **pom.xml**: Maven configuration for building and managing dependencies.
 
 To compile and run the Java application:
 ```bash
 cd java/src/main/java
 mvn clean package
-hadoop jar target/your-jar-file.jar com.yourpackage.MapReduceTask /resources/input /resources/output
+hadoop jar target/your-jar-file.jar com.yourpackage.StringPairDriver /resources/input /resources/output
 ```
 
 ### 3. Python Implementation
-The `python` directory includes implementations of the MapReduce tasks in Python with and without a combiner for comparison.
+The `python` directory includes two main tasks for processing data:
 
-- **task_with_combiner.py**: Implements the MapReduce logic using a combiner.
-- **task_without_combiner.py**: Implements the MapReduce logic without a combiner.
-- **helper_functions.py**: Contains utility functions used in the Python tasks.
-- **requirements.txt**: Lists the Python dependencies.
+- **Indus_data_partition&customclass**: Handles data partitioning and uses a custom class.
+  - **Code**: Python scripts for the task.
+  - **Input**: Input data files.
+  - **Logs**: Log files generated during execution.
+  - **Outputs**: Processed output data.
 
-Install Python dependencies:
-```bash
-pip install -r python/requirements.txt
-```
+- **Indus_data_simple_count**: Implements a simple count task.
+  - **Code**: Python scripts for the task.
+  - **Input**: Input data files.
+  - **Logs**: Log files generated during execution.
+  - **Outputs**: Processed output data.
+
 
 Run the tasks:
 ```bash
