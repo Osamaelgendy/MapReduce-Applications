@@ -63,15 +63,16 @@ This project demonstrates the use of Hadoop MapReduce with both Java and Python 
 The Hadoop environment was configured on a Linux machine using a custom Dockerfile. This ensures a consistent and portable setup.
 
 Steps:
-1. Build the Docker image:
+1. Create Dockerfile containing all the dependencies for your linux machine that hosts hadoop in a pseudo distributed mode.
+   
+2. Build the Docker image:
    ```bash
-   docker build -t hadoop-environment .
+   docker build -t custom-hadoop-ubuntu .
    ```
 2. Run the Hadoop container:
    ```bash
-   docker run -d -p 8088:8088 -p 50070:50070 --name hadoop-container hadoop-environment
+   docker run -it -p 8088:8088 -p 9870:9870 -p 19888:19888 custom-hadoop-ubuntu:latest
    ```
-3. Access the Hadoop UI at `http://localhost:8088` (Resource Manager) and `http://localhost:50070` (NameNode).
 
 ### 2. Java Implementation
 The `java` directory contains the implementation of the MapReduce task in Java.
